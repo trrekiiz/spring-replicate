@@ -1,0 +1,13 @@
+#Input table all table name in here!
+Tablename:
+  selection:
+    SELECT * FROM
+  insertion:
+    INSERT INTO
+      (Column1,
+      Column2,
+      Column3
+    VALUES
+      (:Column1,
+      :Column2,
+      :Column3)

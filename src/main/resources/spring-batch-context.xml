@@ -1,0 +1,58 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/batch
+                           http://www.springframework.org/schema/batch/spring-batch-3.0.xsd
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+    <import resource="classpath:context-datasource.xml"/>
+
+    <!-- JobRepository and JobLauncher are configuration/setup classes -->
+    <bean id="jobRepository"
+          class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean"/>
+
+    <bean id="jobLauncher"
+          class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+        <property name="jobRepository" ref="jobRepository"/>
+    </bean>
+
+    <bean id="databaseItemReader"
+          class="org.springframework.batch.item.database.JdbcCursorItemReader">
+        <property name="dataSource" ref="sourceDatabase"/>
+        <property name="sql" value="${TeamMembers.selection}"/>
+        <property name="rowMapper">
+            <bean class="org.springframework.jdbc.core.BeanPropertyRowMapper">
+                <property name="mappedClass" value="class"/>
+            </bean>
+        </property>
+    </bean>
+    <bean id="databaseItemWriter" class="org.springframework.batch.item.database.JdbcBatchItemWriter"
+          scope="step">
+        <property name="dataSource" ref="targetDatabase"/>
+        <property name="sql" value="${TeamMembers.insertion}"/>
+        <property name="itemSqlParameterSourceProvider">
+            <bean class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider"/>
+        </property>
+    </bean>
+
+    <!-- Optional JobExecutionListener to perform business logic before and after the job -->
+    <bean id="jobListener" class="com.database.migration.joblistener.MigrationJobListener"/>
+
+    <!-- Step will need a transaction manager -->
+    <bean id="transactionManager"
+          class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+    <!-- Actual Job -->
+    <batch:job id="migrationJob">
+        <batch:step id="migrateTeamMembers">
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="databaseItemReader" writer="databaseItemWriter"
+                             commit-interval="10"/>
+            </batch:tasklet>
+        </batch:step>
+        <batch:listeners>
+            <batch:listener ref="jobListener"/>
+        </batch:listeners>
+    </batch:job>
+
+</beans>
