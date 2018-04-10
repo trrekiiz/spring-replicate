@@ -1,0 +1,29 @@
+#Input table all table name in here!
+tlitext:
+  detcert:
+    selection:
+      SELECT * FROM tlitext.detcert
+    insertion:
+      INSERT INTO tlitext.detcert
+      VALUES
+        (:policyno,
+        :certno,
+        :code,
+        :address1,
+        :address2,
+        :telephoneno,
+        :mariagestatus,
+        :recname1, :percent1,
+        :relationshipcode1,
+        :recname2,
+        :percent2,
+        :relationshipcode2,
+        :recname3,
+        :percent3,
+        :relationshipcode3,
+        :analist,
+        :prmiseno,
+        :prmiseno2,
+        :loantype,
+        :med,
+        :reserve)
