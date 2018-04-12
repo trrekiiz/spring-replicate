@@ -1,6 +1,5 @@
 package java.th.co.ipassion.replicate.main;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionException;
@@ -9,7 +8,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-@SpringBootApplication
 public class MainApplication {
 
     public static void main(String[] args) {
